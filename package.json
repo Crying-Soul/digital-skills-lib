@@ -1,0 +1,21 @@
+{
+  "name": "ultimate-excel",
+  "version": "1.0.0",
+  "description": "useful tool to work with excel tables in node",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "keywords": [
+    "excel",
+    "xlsx",
+    "xlsm"
+  ],
+  "author": "Egor Grebnev <grebnevegor2000@mail.ru>",
+  "license": "ISC",
+  "dependencies": {
+    "excel4node": "^1.8.2",
+    "sanitize-html": "^2.11.0",
+    "xlsx": "^0.18.5"
+  }
+}
