@@ -1,17 +1,15 @@
-const sanitizeHtml = require("sanitize-html");
 class DigitalLib {
   constructor() {
     this.xlsx = require("xlsx");
     this.excel = require("excel4node");
     this.path = require("path");
     this.fs = require("fs");
+    this.parseOpts = { header: "A", raw: false};
     this.filesRoutes = [];
   }
 
-  getLetterSlice(c1 = "a", c2 = "z") {
-    c1 = c1.toLowerCase();
-    c2 = c2.toLowerCase();
-    const a = "abcdefghijklmnopqrstuvwxyz".split("");
+  getLetterSlice(c1 = "A", c2 = "Z") {
+    const a = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
     return a.slice(a.indexOf(c1), a.indexOf(c2) + 1);
   }
 
@@ -23,8 +21,22 @@ class DigitalLib {
       else return this.filesRoutes.push(absolute);
     });
   }
-  getJsonFromExcelAll(fileRoute, opts = { header: "A" }) {
-    let workbook = this.xlsx.readFile(fileRoute);
+  getExcelRow(jsonData, row = "A") {
+    const excelRow = [];
+    jsonData.forEach((el, i) => {
+      if (row in el) {
+        excelRow.push({ row: i, data: el[row] });
+      }
+    });
+    return excelRow;
+  }
+  getJsonFromExcelAll(fileRoute, opts = this.parseOpts) {
+    let workbook = this.xlsx.read(fileRoute, {
+      type: "binary",
+      cellDates: true,
+      cellNF: false,
+      cellText: false,
+    });
     let sheet_name_list = workbook.SheetNames;
     let json = [];
     sheet_name_list.forEach((sheet_name, index) => {
@@ -38,7 +50,7 @@ class DigitalLib {
       });
     });
   }
-  getJsonFromExcelFirst(fileRoute, opts = { header: "A" }) {
+  getJsonFromExcelFirst(fileRoute, opts = this.parseOpts) {
     let workbook = this.xlsx.readFile(fileRoute);
     let sheet_name_list = workbook.SheetNames;
     return this.xlsx.utils.sheet_to_json(
@@ -54,4 +66,4 @@ DL.getAllFileRoutes("./maps/");
 
 const json = DL.getJsonFromExcelFirst(DL.filesRoutes[0]);
 
-console.log(DL.getJsonFromExcelFirst(DL.filesRoutes[0]));
+console.log(json[0]);
